@@ -1,0 +1,106 @@
+body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: #fafafa;
+            color: #262626;
+            overflow-x: hidden;
+        }
+
+        /* SPA Pages */
+        #page-profil, #page-surat, #myModal { display: none; }
+
+        /* Profil Container */
+        .profile-container { max-width: 700px; margin: 0 auto; padding: 20px 5px; }
+        .header { display: flex; align-items: center; margin-bottom: 20px; }
+        .profile-pic { width: 90px; height: 90px; border-radius: 50%; overflow: hidden; border: 2px solid #dbdbdb; margin-right: 20px; }
+        .profile-pic img { width: 100%; height: 100%; object-fit: cover; }
+        .stats { display: flex; flex-grow: 1; justify-content: space-around; text-align: center; }
+        .stat-item b { display: block; font-size: 16px; }
+        .stat-item span { font-size: 14px; color: #8e8e8e; }
+        .bio { padding: 0 10px; margin-bottom: 20px; font-size: 14px; }
+        .bio b { display: block; margin-bottom: 5px; }
+        .btn-follow { width: 100%; background-color: #0095f6; color: white; border: none; padding: 7px; border-radius: 8px; font-weight: bold; margin-bottom: 20px; cursor: pointer; }
+
+        /* Grid */
+        .photo-grid { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 3px; 
+    padding: 3px;
+    justify-content: flex-start; /* Biar foto ke-10 mulai dari kiri */
+}
+
+.photo-item { 
+    width: calc(33.33% - 2px); /* Pas buat 3 kolom tapi fleksibel */
+    aspect-ratio: 1 / 1; 
+    background-color: #efefef; 
+    overflow: hidden; 
+    cursor: pointer; 
+}
+
+.photo-item img, .photo-item video { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+}
+        /* Modal / Pop-up ala IG */
+        .modal { position: fixed; z-index: 20000; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); }
+        /* 1. Modifikasi modal-content supaya tidak mentok ke bawah */.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    /* Ganti 100vh jadi angka di bawah ini */
+    height: calc(105vh - 90px); 
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    
+   
+}
+
+        
+        .modal-img { width: 100%; background: #000; }
+        /* 2. Tambahin Padding khusus buat area input di bawah modal */
+        .modal-info { 
+            padding: 15px; 
+            padding-bottom: 10px; /* Tambahin padding bawah biar konten gak ketutup input */
+        }
+          /* 3. Kasih jarak aman di pembungkus input komentar */
+          #comment-input-container {
+              padding: 10px; 
+              padding-bottom: calc(10px + env(safe-area-inset-bottom)); 
+                border-top: 1px solid #efefef; 
+                display: flex; 
+                background: white;
+                position: sticky;
+                bottom: 0;
+                z-index: 10; /* Jarak aman biar gak kehalang bar Safari */
+              border-top: 1px solid #efefef; 
+              display: flex; 
+              background: white;
+              position: sticky;
+              bottom: 0;
+          }
+
+        .close-btn { position: absolute; top: 15px; right: 20px; color: white; font-size: 35px; font-weight: bold; cursor: pointer; z-index: 21000; }
+
+        /* Surat Cinta Page */
+        #page-surat { background: #fff0f5; min-height: 100vh; padding: 40px 20px; text-align: center; }
+
+.heart {
+    position: fixed;
+    top: -10px;
+    color: #ff4d94;
+    font-size: 20px;
+    user-select: none;
+    z-index: 50000;
+    animation: fall linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(100vh) rotate(360deg);
+    }
+}
