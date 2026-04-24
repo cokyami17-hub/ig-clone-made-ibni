@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Instagram Made by Ibni</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Style+Script&family=Poppins:wght@600&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>(function(){ emailjs.init("GNxdMH6rv_t9-kIvU"); })();</script>
+    
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        :root { --vh: 1vh; }
+        * { box-sizing: border-box; }
+        .tab-active { color: #000 !important; border-bottom: 2px solid #000 !important; }
+        .tab-inactive { color: gray !important; border-bottom: 2px solid transparent; }
+        
+        .login-bg { background: linear-gradient(135deg, #ffe2ed 0%, #e6e9ff 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .login-box { background: rgba(255, 255, 255, 0.9); padding: 30px 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); width: 100%; max-width: 350px; text-align: center; }
+        .input-keren { width: 100%; padding: 15px; margin-bottom: 15px; border: 1px solid #dbdbdb; border-radius: 12px; background: #fafafa; outline: none; font-size: 14px; }
+        .btn-keren { width: 100%; padding: 15px; border-radius: 12px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div id="login-screen" class="login-bg">
+        <h1 style="font-family: 'Style Script', cursive; font-size: 55px; color: #d81b60; margin-bottom: 20px;">Instagram</h1>
+        <div class="login-box">
+            <input id="email-input" type="email" placeholder="Email" class="input-keren">
+            <input id="pass-input" type="password" placeholder="Password" class="input-keren">
+            <button onclick="loginEmail()" class="btn-keren" style="background: linear-gradient(to right, #0095f6, #0077c9); color: white; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,149,246,0.3);">Log In</button>
+            <button onclick="registerEmail()" style="color: #0095f6; font-weight: bold; background: none; border: none; font-size: 14px; margin-bottom: 20px; cursor: pointer;">Daftar Akun Baru</button>
+            <div style="display: flex; align-items: center; margin: 20px 0;">
+                <hr style="flex-grow: 1; border: 0.5px solid #dbdbdb;">
+                <span style="padding: 0 10px; color: gray; font-size: 12px; font-weight: bold;">ATAU</span>
+                <hr style="flex-grow: 1; border: 0.5px solid #dbdbdb;">
+            </div>
+            <button onclick="loginGoogle()" style="width: 100%; background: white; border: 2px solid #efefef; padding: 12px; border-radius: 12px; font-weight: bold; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 18px; margin-right: 10px; color: #DB4437;">G</span> Login dengan Google
+            </button>
+        </div>
+    </div>
+
+    <div id="page-profil" style="display: none;">
+        <div class="profile-container">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding: 10px 5px;">
+                <b id="tampil-username-profil" style="font-size:18px;">Username</b>
+                <div>
+                    <button onclick="bukaInbox()" style="background:none; border:none; font-size:24px; margin-right:15px; cursor:pointer;">💬</button>
+                    <button onclick="bukaAdmin()" style="background:none; border:none; font-size:22px; margin-right:15px; cursor:pointer;">⚙️</button>
+                    <button onclick="logoutUser()" style="background:none; border:none; font-size:22px; color:red; cursor:pointer;">🚪</button>
+                </div>
+            </div>
+
+            <div class="header">
+                <div class="profile-pic">
+                    <img id="tampil-foto-profil" src="https://via.placeholder.com/150" alt="PP">
+                </div>
+                <div class="stats">
+                    <div class="stat-item"><b id="post-count">0</b><span>Postingan</span></div>
+                    <div class="stat-item"><b id="follower-count">0</b><span>Pengikut</span></div>
+                    <div class="stat-item"><b id="following-count">0</b><span>Mengikuti</span></div>
+                </div>
+            </div>
+            
+            <div class="bio">
+                <div id="tampil-bio" style="white-space: pre-wrap;">Bio kosong</div>
+            </div>
+
+            <div style="display:flex; border-top:1px solid #dbdbdb; border-bottom:1px solid #dbdbdb; margin-top: 10px;">
+                <button id="tab-grid" onclick="bukaTab('grid')" style="flex:1; padding:15px; background:none; border:none; font-weight:bold; font-size:14px; cursor:pointer;" class="tab-active">POSTINGAN</button>
+                <button id="tab-upload" onclick="bukaTab('upload')" style="flex:1; padding:15px; background:none; border:none; font-weight:bold; font-size:14px; cursor:pointer;" class="tab-inactive">UPLOAD</button>
+            </div>
+
+            <div id="grid-section" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; margin-top:2px;"></div>
+
+            <div id="upload-section" style="display:none; padding:20px;">
+                <label id="label-pilih" for="inp-file" style="display:block; width:100%; text-align:center; padding:40px 0; border:2px dashed #dbdbdb; border-radius:10px; color:#0095f6; font-weight:bold; cursor:pointer; background:#fafafa;">Pilih Foto / Video</label>
+                <input type="file" id="inp-file" accept="image/*, video/*" style="display:none;" onchange="previewFile()">
+                <img id="img-preview" style="width:100%; display:none; margin-top:10px; border-radius:5px;">
+                <video id="vid-preview" controls style="width:100%; display:none; margin-top:10px; border-radius:5px;"></video>
+                <textarea id="inp-cap" placeholder="Tulis caption..." style="width:100%; border:1px solid #dbdbdb; padding:15px; margin-top:15px; border-radius:10px; outline:none; background:#fafafa;" rows="3"></textarea>
+                <button id="btn-upload" onclick="prosesUpload()" style="width:100%; padding:15px; background:#0095f6; color:white; font-weight:bold; border:none; border-radius:10px; margin-top:10px; cursor:pointer;">Bagikan 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-profil-teman" style="display: none; background: #fafafa; min-height: 100vh;">
+        <div class="profile-container">
+            <div style="display:flex; align-items:center; margin-bottom:15px; padding: 10px 5px; border-bottom:1px solid #dbdbdb;">
+                <button onclick="tutupProfilTeman()" style="background:none; border:none; font-size:24px; margin-right:15px; cursor:pointer;">⬅️</button>
+                <b id="tampil-username-teman" style="font-size:18px;">Username Teman</b>
+            </div>
+
+            <div class="header">
+                <div class="profile-pic">
+                    <img id="tampil-foto-teman" src="https://via.placeholder.com/150">
+                </div>
+                <div class="stats">
+                    <div class="stat-item"><b id="post-count-teman">0</b><span>Postingan</span></div>
+                    <div class="stat-item"><b id="follower-count-teman">0</b><span>Pengikut</span></div>
+                    <div class="stat-item"><b id="following-count-teman">0</b><span>Mengikuti</span></div>
+                </div>
+            </div>
+            
+            <div class="bio">
+                <div id="tampil-bio-teman" style="white-space: pre-wrap;">Bio kosong</div>
+            </div>
+
+            <div style="padding: 0 10px; margin-bottom: 15px;">
+                <button id="btn-chat-teman" style="width:100%; padding:10px; background:#efefef; color:black; font-weight:bold; border:none; border-radius:8px; cursor:pointer;">Kirim Pesan</button>
+            </div>
+
+            <div style="display:flex; border-top:1px solid #dbdbdb; border-bottom:1px solid #dbdbdb;">
+                <button style="flex:1; padding:15px; background:none; border:none; font-weight:bold; font-size:14px; cursor:pointer;" class="tab-active">POSTINGAN</button>
+            </div>
+
+            <div id="grid-section-teman" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:2px; margin-top:2px;"></div>
+        </div>
+    </div>
+
+    <div id="myModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:100; flex-direction:column; overflow:hidden;">
+        <button onclick="tutupModal()" style="position:absolute; top:15px; right:15px; color:white; font-size:35px; font-weight:bold; border:none; background:none; cursor:pointer; z-index:200;">&times;</button>
+        
+        <div style="flex: 1 1 auto; display:flex; align-items:center; justify-content:center; position:relative; min-height:0;">
+            <button onclick="geserMomen(-1)" style="position: absolute; left: 10px; z-index: 100; background: rgba(255,255,255,0.7); border-radius: 50%; width: 40px; height: 40px; font-weight: bold; cursor:pointer; border:none;">❮</button>
+            <div id="modal-media-container" style="width: 100%; height: 100%; display:flex; align-items:center; justify-content:center;"></div>
+            <button onclick="geserMomen(1)" style="position: absolute; right: 10px; z-index: 100; background: rgba(255,255,255,0.7); border-radius: 50%; width: 40px; height: 40px; font-weight: bold; cursor:pointer; border:none;">❯</button>
+        </div>
+        
+        <div style="flex: 0 1 40%; background:white; border-radius:20px 20px 0 0; display:flex; flex-direction:column; min-height:0;">
+            <div style="padding: 15px; padding-bottom: 0;">
+                <p>
+                    <b id="tampil-username-caption" style="font-family: 'Style Script', cursive; font-size: 24px; color:#0095f6;">User</b> 
+                    <span id="caption-text" style="white-space: pre-wrap; margin-left:5px; font-size: 14px;"></span>
+                    <span id="btn-hapus-post" style="float:right; cursor:pointer; color:red; font-size:12px; font-weight:bold; display:none; background:#ffebeb; padding:4px 8px; border-radius:10px;" onclick="hapusPostingan()">Hapus 🗑️</span>
+                </p>
+                <hr style="margin: 10px 0 0 0; border: 0.5px solid #efefef;">
+            </div>
+            
+            <div id="comment-list" style="flex: 1 1 auto; overflow-y: auto; padding: 10px 15px;"></div>
+            
+            <div style="padding: 10px 15px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); border-top: 1px solid #efefef; display:flex; gap:10px; align-items:center; background:#fff;">
+                <input type="text" id="input-komen" placeholder="Tambah komentar..." style="flex-grow:1; height: 40px; border:1px solid #dbdbdb; border-radius:20px; padding:0 15px; outline:none; background:#fafafa; font-size:14px; margin:0;">
+                <button onclick="kirimKomentar()" style="background:none; border:none; color:#0095f6; font-weight:bold; cursor:pointer; margin:0; font-size:14px;">Kirim</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-kontak" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#fafafa; z-index:100; flex-direction:column;">
+        <div style="padding:15px; background:white; border-bottom:1px solid #dbdbdb; display:flex; align-items:center; position:sticky; top:0; z-index:10;">
+            <button onclick="document.getElementById('modal-kontak').style.display='none'" style="font-size:24px; background:none; border:none; margin-right:15px; cursor:pointer;">⬅️</button>
+            <b style="font-size:18px; flex-grow:1;">Pesan & Teman</b>
+        </div>
+        <div style="padding:15px; background:white; border-bottom:1px solid #dbdbdb;">
+            <input type="text" id="input-cari-teman" oninput="cariTeman()" placeholder="🔍 Cari nama pengguna..." style="width:100%; padding:12px 15px; border:1px solid #dbdbdb; border-radius:20px; outline:none; background:#fafafa; font-size:14px;">
+        </div>
+        <div id="daftar-teman-container" style="flex-grow:1; overflow-y:auto; padding:15px; padding-bottom:80px;"></div>
+    </div>
+
+    <div id="modal-pesan" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#fafafa; z-index:105; flex-direction:column;">
+        <div style="padding:15px; background:white; border-bottom:1px solid #dbdbdb; display:flex; align-items:center; position:sticky; top:0; z-index:10;">
+            <button onclick="tutupDM()" style="font-size:24px; background:none; border:none; margin-right:15px; cursor:pointer;">⬅️</button>
+            <img id="pp-teman-dm" src="" style="width:35px; height:35px; border-radius:50%; object-fit:cover; margin-right:10px; display:none; border:1px solid #efefef;">
+            <b id="nama-teman-dm" style="font-size:18px;">Nama Teman</b>
+        </div>
+        
+        <div id="chat-container" style="flex-grow:1; overflow-y:auto; padding:15px; display:block;"></div>
+        
+        <div style="background:white; border-top:1px solid #dbdbdb; padding: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom)); position:sticky; bottom:0;">
+            <div style="display:flex; gap:10px; align-items:center;">
+                <input type="text" id="isi-pesan-eka" placeholder="Ketik pesan..." style="flex-grow:1; height: 40px; box-sizing: border-box; border:1px solid #dbdbdb; border-radius:20px; padding:0 15px; outline:none; background:#fafafa; font-size:14px; margin:0;">
+                <button onclick="kirimPesanPribadi()" style="background:#0095f6; color:white; border:none; height: 40px; box-sizing: border-box; padding:0 20px; border-radius:20px; font-weight:bold; cursor:pointer; margin:0; font-size:14px; display:flex; align-items:center; justify-content:center;">Kirim</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-panel" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:200; padding:20px; overflow-y:auto;">
+        <div style="max-width: 500px; margin: 0 auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid #dbdbdb; padding-bottom:15px;">
+                <h2 style="font-size:22px; font-weight:bold;">Edit Profil</h2>
+                <button onclick="tutupAdmin()" style="font-size:35px; background:none; border:none; cursor:pointer; color:gray;">&times;</button>
+            </div>
+            
+            <input type="hidden" id="inp-email-notif">
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight:bold; font-size:14px; display:block; margin-bottom:5px;">📸 Ganti Foto Profil</label>
+                <input type="file" id="inp-file-pp" accept="image/*" style="width:100%; border:1px solid #dbdbdb; padding:12px; border-radius:10px; background:#fafafa;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight:bold; font-size:14px; display:block; margin-bottom:5px;">🎵 Ganti Lagu Akun</label>
+                <input type="file" id="inp-file-musik" accept="video/*, audio/*" style="width:100%; border:1px solid #dbdbdb; padding:12px; border-radius:10px; background:#fafafa;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight:bold; font-size:14px; display:block; margin-bottom:5px;">👤 Nama Akun</label>
+                <input type="text" id="inp-username" placeholder="Nama lu..." style="width:100%; padding:15px; border:1px solid #dbdbdb; border-radius:10px; background:#fafafa; outline:none;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight:bold; font-size:14px; display:block; margin-bottom:5px;">📝 Bio Akun</label>
+                <textarea id="inp-bio" placeholder="Tulis bio..." style="width:100%; padding:15px; border:1px solid #dbdbdb; border-radius:10px; background:#fafafa; outline:none;" rows="4"></textarea>
+            </div>
+            <button id="btn-simpan-config" onclick="simpanConfig()" style="width:100%; padding:15px; background:#28a745; color:white; font-weight:bold; border:none; border-radius:10px; font-size:16px; cursor:pointer;">Simpan Profil 💾</button>
+        </div>
+    </div>
+
+    <audio id="musik-utama" loop></audio>
+    <div id="ig-toast" style="position:fixed; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:white; padding:12px 25px; border-radius:25px; z-index:9999; visibility:hidden; opacity:0; bottom:30px; transition:all 0.3s; font-weight:bold; font-size:14px; text-align:center;">
+        <span id="toast-text"></span>
+    </div>
+
+    <script src="script.js?v=beneran_tamat_bos"></script>
+    
+
+</body>
+</html>
