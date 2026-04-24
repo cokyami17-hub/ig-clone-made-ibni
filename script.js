@@ -494,10 +494,10 @@ function loadPesanPribadi() {
                 
                 const btnHapus = isMe ? `<span onclick="hapusPesan('${k}')" style="cursor:pointer; color:#ff4d4d; font-size:16px; margin-right:8px; display:flex; align-items:flex-end; padding-bottom:5px;" title="Hapus">🗑️</span>` : '';
                 
-                // INI JIPLAKAN 100% KODINGAN AYANG LU (MURNI FLEXBOX)
+                // DITAMBAHIN width: fit-content; BIAR MURNI NGE-PAS SAMA TEKS!
                 h += `<div style="display:flex; justify-content:${isMe ? 'flex-end' : 'flex-start'}; margin-bottom: 8px; width: 100%;">
                         ${isMe ? btnHapus : ''}
-                        <div style="background:${isMe ? '#0095f6' : '#efefef'}; color:${isMe ? '#fff' : '#000'}; padding:8px 12px; border-radius:15px; max-width:80%; font-size:14px; white-space: pre-wrap; word-break: break-word; text-align: left;">
+                        <div style="background:${isMe ? '#0095f6' : '#efefef'}; color:${isMe ? '#fff' : '#000'}; padding:8px 12px; border-radius:15px; max-width:80%; font-size:14px; white-space: pre-wrap; word-break: break-word; text-align: left; width: fit-content;">
                             ${i.m}
                             <div style="font-size:9px; color:${isMe ? '#e0e0e0' : 'gray'}; text-align:right; margin-top:4px;">${new Date(i.t).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</div>
                         </div>
