@@ -494,11 +494,11 @@ function loadPesanPribadi() {
                 
                 const btnHapus = isMe ? `<span onclick="hapusPesan('${k}')" style="cursor:pointer; color:#ff4d4d; font-size:16px; margin-right:8px; align-self:flex-end; padding-bottom:5px;" title="Hapus">🗑️</span>` : '';
                 
-                // INI YANG BENER, ADA width: fit-content dan width: 100% NYA! JANGAN ILANG LAGI YA BOS! 😂
+                // KUNCI JAWABANNYA DI SINI BOS: white-space ditaruh di <span> dan nempel ketat sama ${i.m}
                 h += `<div style="display:flex; justify-content:${isMe ? 'flex-end' : 'flex-start'}; margin-bottom: 8px; width:100%;">
                         ${isMe ? btnHapus : ''}
-                        <div style="background:${isMe ? '#0095f6' : '#efefef'}; color:${isMe ? '#fff' : '#000'}; padding:8px 12px; border-radius:15px; max-width:80%; width:fit-content; font-size:14px; white-space: pre-wrap; word-break: break-word; text-align:left;">
-                            ${i.m}
+                        <div style="background:${isMe ? '#0095f6' : '#efefef'}; color:${isMe ? '#fff' : '#000'}; padding:8px 12px; border-radius:15px; max-width:80%; width:fit-content; font-size:14px; word-break: break-word; text-align:left;">
+                            <span style="white-space: pre-wrap;">${i.m}</span>
                             <div style="font-size:9px; color:${isMe ? '#e0e0e0' : 'gray'}; text-align:right; margin-top:4px;">${new Date(i.t).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}</div>
                         </div>
                       </div>`;
@@ -513,7 +513,6 @@ function loadPesanPribadi() {
         });
     });
 }
-
 
 
 
