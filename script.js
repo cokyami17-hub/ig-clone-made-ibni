@@ -112,10 +112,10 @@ function bukaTab(tab) {
 }
 
 function bukaAdmin() {
-    const pwd = prompt("Masukkan Password Admin:");
-    if (pwd === passAdmin) document.getElementById("admin-panel").style.display = "block";
-    else if (pwd !== null) alert("Password Salah!");
+    // Langsung buka panel admin tanpa nanya password
+    document.getElementById("admin-panel").style.display = "block";
 }
+
 function tutupAdmin() { document.getElementById("admin-panel").style.display = "none"; }
 
 async function uploadKeCloudinary(file, tipeMedia) {
