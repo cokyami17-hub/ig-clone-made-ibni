@@ -647,12 +647,13 @@ function updateUIFollow() {
 }
 
 // ==========================================
-// 9. MESIN PUSH NOTIFICATION (ONESIGNAL)
+// 9. MESIN PUSH NOTIFICATION (ONESIGNAL) FIXED 1000%
 // ==========================================
 async function kirimNotifIG(judul, pesan) {
     const dataNotif = {
-        app_id: "a633f427-59ec-49ce-a388-b10df691f942", // Ganti pake App ID dari OneSignal lu
-        included_segments: ["All"], 
+        app_id: "a633f427-59ec-49ce-a388-b10df691f942", 
+        // Ganti nama targetnya biar sesuai standar baru OneSignal
+        included_segments: ["Subscribed Users", "Total Subscriptions", "Active Users"], 
         headings: { "en": judul },
         contents: { "en": pesan },
         android_accent_color: "FFD81B60", 
@@ -660,15 +661,16 @@ async function kirimNotifIG(judul, pesan) {
     };
 
     try {
-        await fetch("https://onesignal.com/api/v1/notifications", {
+        // KITA SEWA "JOKI" PROXY BIAR GAK DIBLOKIR SAMA BROWSER!
+        await fetch("https://corsproxy.io/?https://onesignal.com/api/v1/notifications", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json; charset=utf-8",
-                "Authorization": "Basic os_v2_app_uyz7ij2z5re45i4iweg7nepziktmz5zfdvxu3cv7k2nt2gebof64rvlqeqvloq34io7nrrzfr3d362b33go7ew5e7gdvlomtmlr42va" // Ganti pake API Key lu
+                "Authorization": "Basic os_v2_app_uyz7ij2z5re45i4iweg7nepziktmz5zfdvxu3cv7k2nt2gebof64rvlqeqvloq34io7nrrzfr3d362b33go7ew5e7gdvlomtmlr42va"
             },
             body: JSON.stringify(dataNotif)
         });
-        console.log("Push Notif Terkirim!");
+        console.log("Push Notif Berhasil Ditembak! 🚀");
     } catch (e) {
         console.log("Push Notif Gagal: " + e.message);
     }
