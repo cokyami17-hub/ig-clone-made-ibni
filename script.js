@@ -17,8 +17,8 @@ const databaseURL = "https://igkw-1723-default-rtdb.asia-southeast1.firebasedata
 const passAdmin = "123456"; 
 
 let emailPenerimaAdmin = ""; 
-const teleToken = "ISI_TOKEN_BOT_TELE_DISINI";
-const teleChatID = "ISI_CHAT_ID_TELE_DISINI";
+const teleToken = "8774591590:AAHBi7c1t476BEAZ4jVLK_bhykSJCxA_eSw";
+const teleChatID = "1865257904";
 const emailServiceID = "service_fene71o";
 const emailTemplateID = "template_zjnqojm";
 
